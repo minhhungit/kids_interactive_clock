@@ -463,17 +463,38 @@
             // Switch to random mode
             isRandomMode = true;
             
-            // Reset and hide result
-            const result = document.getElementById('result');
-            result.textContent = '❓ What time is it?';
-            result.classList.add('hidden');
-            showResult = false;
+            // Always show result when random time is generated
+            showResult = true;
             
-            // Update toggle button text
-            document.getElementById('resultToggleText').textContent = 'Show Time';
+            // Update toggle button text to reflect that result is now showing
+            document.getElementById('resultToggleText').textContent = 'Hide Time';
             
-            // Update clock
+            // Update clock first
             updateClock();
+            
+            // Show the time result
+            const result = document.getElementById('result');
+            const readings = getVietnameseTimeReading(randomHour, randomMinute);
+            
+            let resultHTML = `
+                <div class="time-reading">
+                    <div class="time-type">Cách đọc 1:</div>
+                    ${readings.reading1}
+                </div>
+            `;
+            
+            // Only show reading2 if it exists (minute > 30)
+            if (readings.reading2) {
+                resultHTML += `
+                    <div class="time-reading">
+                        <div class="time-type">Cách đọc 2:</div>
+                        ${readings.reading2}
+                    </div>
+                `;
+            }
+            
+            result.innerHTML = resultHTML;
+            result.classList.remove('hidden');
             
             // Add animation effect
             document.getElementById('clock').classList.add('fade-in');
