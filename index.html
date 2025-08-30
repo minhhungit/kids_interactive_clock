@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Clock for Kids</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .clock {
+            width: 450px;
+            height: 450px;
+            border: 12px solid #4ecdc4;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            position: relative;
+            background: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .clock-center {
+            width: 25px;
+            height: 25px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .clock-numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .clock-number {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .number-12 {
+            top: 60px;
+            left: 225px;
+        }
+
+        .number-3 {
+            top: 220px;
+            left: 390px;
+        }
+
+        .number-6 {
+            top: 380px;
+            left: 225px;
+        }
+
+        .number-9 {
+            top: 220px;
+            left: 60px;
+        }
+
+        .hour-hand {
+            width: 10px;
+            height: 120px;
+            background: #333;
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 6px;
+            height: 160px;
+            background: #a5a5a5;
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 3px;
+            z-index: 2;
+        }
+
+        .second-hand {
+            width: 3px;
+            height: 180px;
+            background: #ff6b6b;
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            z-index: 1;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .result {
+            margin-top: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .tick-mark {
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background: #333;
+            top: 15px;
+            left: 50%;
+            transform-origin: 50% 210px;
+        }
+
+        .tick-mark.hour {
+            width: 5px;
+            height: 35px;
+            background: #222;
+            top: 10px;
+        }
+
+        .time-reading {
+            background: #e8f5e8;
+            border: 2px solid #4ecdc4;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px;
+            font-size: 1.1rem;
+        }
+
+        .time-type {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        @media (max-width: 768px) {
+            .clock {
+                width: 350px;
+                height: 350px;
+            }
+            
+            .number-12 {
+                top: 50px;
+                left: 175px;
+            }
+
+            .number-3 {
+                top: 170px;
+                left: 300px;
+            }
+
+            .number-6 {
+                top: 290px;
+                left: 175px;
+            }
+
+            .number-9 {
+                top: 170px;
+                left: 50px;
+            }
+            
+            .hour-hand {
+                height: 90px;
+            }
+
+            .minute-hand {
+                height: 120px;
+            }
+
+            .second-hand {
+                height: 140px;
+            }
+            
+            .tick-mark {
+                transform-origin: 50% 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fun Clock for Kids!</h1>
+        
+        <div class="clock" id="clock">
+            <!-- Clock numbers -->
+            <div class="clock-numbers">
+                <div class="clock-number number-12">12</div>
+                <div class="clock-number number-3">3</div>
+                <div class="clock-number number-6">6</div>
+                <div class="clock-number number-9">9</div>
+            </div>
+            
+            <!-- Tick marks -->
+            <div class="tick-marks"></div>
+            
+            <!-- Clock hands -->
+            <div class="hour-hand" id="hourHand"></div>
+            <div class="minute-hand" id="minuteHand"></div>
+            <div class="second-hand" id="secondHand"></div>
+            
+            <!-- Center dot -->
+            <div class="clock-center"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="toggleSeconds()">
+                <span id="secondsToggleText">Hide Seconds</span>
+            </button>
+            <button class="btn secondary" onclick="randomTime()">
+                🎲 Random Time
+            </button>
+            <button class="btn" onclick="toggleResult()">
+                <span id="resultToggleText">Show Time</span>
+            </button>
+        </div>
+
+        <div class="result" id="result">
+            Click "Random Time" to start!
+        </div>
+    </div>
+
+    <script>
+        let currentTime = new Date();
+        let showSeconds = true;
+        let showResult = true;
+        let randomHour = 12;
+        let randomMinute = 0;
+        let isRandomMode = false;
+
+        function createTickMarks() {
+            const tickMarksContainer = document.querySelector('.tick-marks');
+            
+            // Create 12 hour marks and 60 minute marks
+            for (let i = 0; i < 60; i++) {
+                const tick = document.createElement('div');
+                tick.className = i % 5 === 0 ? 'tick-mark hour' : 'tick-mark';
+                tick.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+                tickMarksContainer.appendChild(tick);
+            }
+        }
+
+        function updateClock() {
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
+
+            let hours, minutes, seconds;
+
+            if (isRandomMode) {
+                hours = randomHour;
+                minutes = randomMinute;
+                seconds = 0;
+            } else {
+                const now = new Date();
+                hours = now.getHours() % 12; // Only use 12-hour format (AM only for simplicity)
+                if (hours === 0) hours = 12; // Convert 0 to 12
+                minutes = now.getMinutes();
+                seconds = now.getSeconds();
+            }
+
+            // Calculate angles
+            const secondAngle = seconds * 6; // 360/60 = 6 degrees per second
+            const minuteAngle = minutes * 6 + seconds * 0.1; // 6 degrees per minute + smooth transition
+            const hourAngle = (hours % 12) * 30 + minutes * 0.5; // 30 degrees per hour + smooth transition
+
+            // Apply rotations
+            hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+            
+            if (showSeconds) {
+                secondHand.style.transform = `translateX(-50%) rotate(${secondAngle}deg)`;
+            }
+        }
+
+        function getVietnameseTimeReading(hour, minute) {
+            const displayHour = hour === 0 ? 12 : hour;
+            const displayMinute = minute.toString().padStart(2, '0');
+            
+            let reading1 = '';
+            let reading2 = null; // Only show reading2 when minute > 30
+            
+            // Method 1: Standard reading
+            if (minute === 0) {
+                reading1 = `🕐 ${displayHour} giờ`;
+            } else {
+                reading1 = `🕐 ${displayHour} giờ ${displayMinute} phút`;
+            }
+            
+            // Method 2: Alternative reading (kém - less than) - only when minute > 30
+            if (minute > 30) {
+                const nextHour = displayHour === 12 ? 1 : displayHour + 1;
+                const remaining = 60 - minute;
+                reading2 = `🕐 ${nextHour} giờ kém ${remaining} phút`;
+            }
+            
+            return { reading1, reading2 };
+        }
+
+        function toggleSeconds() {
+            const secondHand = document.getElementById('secondHand');
+            const toggleText = document.getElementById('secondsToggleText');
+            
+            showSeconds = !showSeconds;
+            
+            if (showSeconds) {
+                secondHand.classList.remove('hidden');
+                toggleText.textContent = 'Hide Seconds';
+            } else {
+                secondHand.classList.add('hidden');
+                toggleText.textContent = 'Show Seconds';
+            }
+        }
+
+        function randomTime() {
+            // Generate random hour (1-12) and minute (0-59)
+            randomHour = Math.floor(Math.random() * 12) + 1;
+            randomMinute = Math.floor(Math.random() * 60);
+            
+            // Switch to random mode
+            isRandomMode = true;
+            
+            // Reset and hide result
+            const result = document.getElementById('result');
+            result.textContent = '❓ What time is it?';
+            result.classList.add('hidden');
+            showResult = false;
+            
+            // Update toggle button text
+            document.getElementById('resultToggleText').textContent = 'Show Time';
+            
+            // Update clock
+            updateClock();
+            
+            // Add animation effect
+            document.getElementById('clock').classList.add('fade-in');
+            setTimeout(() => {
+                document.getElementById('clock').classList.remove('fade-in');
+            }, 500);
+        }
+
+        function toggleResult() {
+            const result = document.getElementById('result');
+            const toggleText = document.getElementById('resultToggleText');
+            
+            showResult = !showResult;
+            
+            if (showResult) {
+                let hour, minute;
+                
+                if (isRandomMode) {
+                    hour = randomHour;
+                    minute = randomMinute;
+                } else {
+                    const now = new Date();
+                    hour = now.getHours() % 12;
+                    if (hour === 0) hour = 12; // Convert 0 to 12 for display
+                    minute = now.getMinutes();
+                }
+                
+                const readings = getVietnameseTimeReading(hour, minute);
+                
+                let resultHTML = `
+                    <div class="time-reading">
+                        <div class="time-type">Cách đọc 1:</div>
+                        ${readings.reading1}
+                    </div>
+                `;
+                
+                // Only show reading2 if it exists (minute > 30)
+                if (readings.reading2) {
+                    resultHTML += `
+                        <div class="time-reading">
+                            <div class="time-type">Cách đọc 2:</div>
+                            ${readings.reading2}
+                        </div>
+                    `;
+                }
+                
+                result.innerHTML = resultHTML;
+                
+                result.classList.remove('hidden');
+                toggleText.textContent = 'Hide Time';
+            } else {
+                result.classList.add('hidden');
+                toggleText.textContent = 'Show Time';
+            }
+        }
+
+        // Initialize clock
+        function init() {
+            createTickMarks();
+            updateClock();
+            
+            // Update real-time clock every second (only when not in random mode)
+            setInterval(() => {
+                if (!isRandomMode) {
+                    updateClock();
+                    
+                    // Update result if showing real time
+                    if (showResult) {
+                        const now = new Date();
+                        let hour = now.getHours() % 12;
+                        if (hour === 0) hour = 12; // Convert 0 to 12 for display
+                        const minute = now.getMinutes();
+                        
+                        const readings = getVietnameseTimeReading(hour, minute);
+                        
+                        let resultHTML = `
+                            <div class="time-reading">
+                                <div class="time-type">Cách đọc 1:</div>
+                                ${readings.reading1}
+                            </div>
+                        `;
+                        
+                        // Only show reading2 if it exists (minute > 30)
+                        if (readings.reading2) {
+                            resultHTML += `
+                                <div class="time-reading">
+                                    <div class="time-type">Cách đọc 2:</div>
+                                    ${readings.reading2}
+                                </div>
+                            `;
+                        }
+                        
+                        document.getElementById('result').innerHTML = resultHTML;
+                    }
+                }
+            }, 1000);
+        }
+
+        // Start the clock when page loads
+        init();
+    </script>
+</body>
+</html>
