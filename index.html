@@ -22,9 +22,11 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
@@ -32,6 +34,28 @@
             font-size: 2.5rem;
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .clock-section {
+            flex: 0 0 auto;
+        }
+
+        .controls-section {
+            flex: 0 0 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-top: 20px;
         }
 
         .clock {
@@ -39,7 +63,6 @@
             height: 450px;
             border: 12px solid #4ecdc4;
             border-radius: 50%;
-            margin: 0 auto 30px;
             position: relative;
             background: white;
             box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
@@ -137,23 +160,23 @@
 
         .controls {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
+            width: 100%;
         }
 
         .btn {
             background: linear-gradient(45deg, #ff9a9e, #fecfef);
             border: none;
-            padding: 12px 20px;
+            padding: 15px 20px;
             border-radius: 25px;
             color: #333;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
         }
 
         .btn:hover {
@@ -171,17 +194,18 @@
         }
 
         .result {
-            margin-top: 20px;
             background: #f8f9fa;
             border-radius: 15px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #333;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 80px;
+            display: block;
             line-height: 1.4;
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
         }
 
         .hidden {
@@ -217,9 +241,9 @@
         .time-reading {
             background: #e8f5e8;
             border: 2px solid #4ecdc4;
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
-            margin: 20px;
+            margin: 10px 0;
             font-size: 1.1rem;
         }
 
@@ -230,6 +254,19 @@
         }
 
         @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .controls-section {
+                flex: none;
+                width: 100%;
+                max-width: 350px;
+                padding-top: 0;
+            }
+            
             .clock {
                 width: 350px;
                 height: 350px;
@@ -270,6 +307,11 @@
             .tick-mark {
                 transform-origin: 50% 160px;
             }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -277,41 +319,47 @@
     <div class="container">
         <h1>Fun Clock for Kids!</h1>
         
-        <div class="clock" id="clock">
-            <!-- Clock numbers -->
-            <div class="clock-numbers">
-                <div class="clock-number number-12">12</div>
-                <div class="clock-number number-3">3</div>
-                <div class="clock-number number-6">6</div>
-                <div class="clock-number number-9">9</div>
+        <div class="main-content">
+            <div class="clock-section">
+                <div class="clock" id="clock">
+                    <!-- Clock numbers -->
+                    <div class="clock-numbers">
+                        <div class="clock-number number-12">12</div>
+                        <div class="clock-number number-3">3</div>
+                        <div class="clock-number number-6">6</div>
+                        <div class="clock-number number-9">9</div>
+                    </div>
+                    
+                    <!-- Tick marks -->
+                    <div class="tick-marks"></div>
+                    
+                    <!-- Clock hands -->
+                    <div class="hour-hand" id="hourHand"></div>
+                    <div class="minute-hand" id="minuteHand"></div>
+                    <div class="second-hand" id="secondHand"></div>
+                    
+                    <!-- Center dot -->
+                    <div class="clock-center"></div>
+                </div>
             </div>
-            
-            <!-- Tick marks -->
-            <div class="tick-marks"></div>
-            
-            <!-- Clock hands -->
-            <div class="hour-hand" id="hourHand"></div>
-            <div class="minute-hand" id="minuteHand"></div>
-            <div class="second-hand" id="secondHand"></div>
-            
-            <!-- Center dot -->
-            <div class="clock-center"></div>
-        </div>
 
-        <div class="controls">
-            <button class="btn" onclick="toggleSeconds()">
-                <span id="secondsToggleText">Hide Seconds</span>
-            </button>
-            <button class="btn secondary" onclick="randomTime()">
-                🎲 Random Time
-            </button>
-            <button class="btn" onclick="toggleResult()">
-                <span id="resultToggleText">Show Time</span>
-            </button>
-        </div>
+            <div class="controls-section">
+                <div class="controls">
+                    <button class="btn" onclick="toggleSeconds()">
+                        <span id="secondsToggleText">Hide Seconds</span>
+                    </button>
+                    <button class="btn secondary" onclick="randomTime()">
+                        🎲 Random Time
+                    </button>
+                    <button class="btn" onclick="toggleResult()">
+                        <span id="resultToggleText">Show Time</span>
+                    </button>
+                </div>
 
-        <div class="result" id="result">
-            Click "Random Time" to start!
+                <div class="result" id="result">
+                    Click "Random Time" to start!
+                </div>
+            </div>
         </div>
     </div>
 
